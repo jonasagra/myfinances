@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="MyFinances.App.Views.SimulatorsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="clr-namespace:MyFinances.App.Views;assembly=MyFinances">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <DataTemplate x:Key="PlanGrid">
+        <DataGrid MaxHeight="260" ItemsSource="{Binding}">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Mês" Width="90" Binding="{Binding Month}" />
+            <DataGridTextColumn Header="Tabela" Width="100" Binding="{Binding Table}" />
+            <DataGridTextColumn Header="Descrição" Width="*" Binding="{Binding Description}" />
+            <DataGridTextColumn Header="Valor" Width="110" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Amount, Converter={StaticResource Currency}}" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </DataTemplate>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <DockPanel Margin="28,22">
+    <StackPanel DockPanel.Dock="Top">
+      <TextBlock Text="Simuladores CLT" Style="{StaticResource PageTitle}" />
+      <TextBlock Style="{StaticResource PageSubtitle}" Text="{Binding Assumptions}" />
+    </StackPanel>
+    <TabControl>
+      <TabItem Header="Férias" DataContext="{Binding Vacation}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <Grid Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="360" />
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Início das férias (dd/mm/aaaa)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Start, UpdateSourceTrigger=PropertyChanged}" />
+              <TextBlock Text="Dias (1 a 30)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Days, UpdateSourceTrigger=PropertyChanged}" />
+              <TextBlock Text="Salário base (R$)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Salary, UpdateSourceTrigger=LostFocus}" />
+              <TextBlock Text="Média de extras (R$)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Average, UpdateSourceTrigger=LostFocus}" />
+              <TextBlock Text="Consignado mensal (R$)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding PayrollLoan, UpdateSourceTrigger=LostFocus}" />
+              <CheckBox Content="Guardar o salário das férias para o mês em que ele vem menor" IsChecked="{Binding Reserve}" />
+              <Button Content="Voltar aos valores automáticos" Style="{StaticResource LinkButton}" HorizontalAlignment="Left" Command="{Binding RestoreDefaultsCommand}" />
+              <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}" />
+              <TextBlock Style="{StaticResource WarningText}" Text="{Binding Notice}" />
+              <Button Content="Lançar nos meses" HorizontalAlignment="Left" Margin="0,8,0,16" Command="{Binding PostCommand}" />
+              <TextBlock Text="Férias já lançadas" Style="{StaticResource FieldLabel}" />
+              <ComboBox DisplayMemberPath="Text" ItemsSource="{Binding PostedItems}" SelectedItem="{Binding Posted}" />
+              <Button Content="Desfazer férias escolhidas" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Command="{Binding UndoCommand}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="Memória de cálculo" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+              <TextBox Style="{StaticResource BreakdownBox}" Height="300" Text="{Binding BreakdownText, Mode=OneWay}" />
+              <TextBlock Text="Prévia do que será lançado" Style="{StaticResource SectionTitle}" />
+              <ContentControl ContentTemplate="{StaticResource PlanGrid}" Content="{Binding Plan}" />
+            </StackPanel>
+          </Grid>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem Header="Demissão" DataContext="{Binding Termination}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <Grid Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="360" />
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="16" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Tipo" Style="{StaticResource FieldLabel}" />
+              <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding Kinds}" SelectedItem="{Binding Kind}" />
+              <TextBlock Text="Aviso prévio" Style="{StaticResource FieldLabel}" />
+              <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding Warnings}" SelectedItem="{Binding Notice}" />
+              <CheckBox Content="Vou cumprir o aviso (pedido de demissão)" IsChecked="{Binding WorksNotice}" Visibility="{Binding IsResignation, Converter={StaticResource BoolToVisible}}" />
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Último dia trabalhado" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding ExitDate, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Admissão" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding HireDate, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Salário base (R$)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding BaseSalary, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Média de extras (R$)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Average, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="13º do ano já recebido" Style="{StaticResource FieldLabel}" />
+                  <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding ThirteenthOptions}" SelectedItem="{Binding Thirteenth}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Valor da 1ª parcela paga" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding FirstInstallment, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Férias vencidas (dias)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding DueVacation, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Seguro-desemprego antes" Style="{StaticResource FieldLabel}" />
+                  <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding PriorClaims}" SelectedItem="{Binding PriorClaim}" />
+                </StackPanel>
+              </Grid>
+              <TextBlock Text="Saldo do FGTS (app FGTS)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding FgtsBalance, UpdateSourceTrigger=LostFocus}" />
+              <CheckBox Content="Saque-aniversário (saldo fica bloqueado)" IsChecked="{Binding BirthdayWithdrawal}" />
+              <TextBlock Text="Saldo devedor do consignado" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding PayrollLoanBalance, UpdateSourceTrigger=LostFocus}" />
+              <CheckBox Content="Consignado tem o FGTS como garantia" IsChecked="{Binding Collateral}" />
+              <Button Content="Voltar aos valores automáticos" Style="{StaticResource LinkButton}" HorizontalAlignment="Left" Command="{Binding RestoreDefaultsCommand}" />
+              <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}" />
+              <TextBlock Style="{StaticResource WarningText}" Text="{Binding WarningsText}" />
+              <Button Content="Lançar entradas previstas" HorizontalAlignment="Left" Margin="0,8,0,0" ToolTip="Rescisão, saque do FGTS, seguro-desemprego e o consignado que sobrar, nos meses certos" Command="{Binding PostCommand}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="Verbas" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+              <TextBox Style="{StaticResource BreakdownBox}" Height="560" Text="{Binding SeveranceItems, Mode=OneWay}" />
+            </StackPanel>
+            <StackPanel Grid.Column="4">
+              <TextBlock Text="FGTS, seguro e consignado" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+              <TextBox Style="{StaticResource BreakdownBox}" Height="560" Text="{Binding Others, Mode=OneWay}" />
+            </StackPanel>
+          </Grid>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem Header="Horas extras" DataContext="{Binding Overtime}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <Grid Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="360" />
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Vencimento no banco de horas (mm/aaaa)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding DueDate, UpdateSourceTrigger=LostFocus}" />
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Salário base (R$)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Salary, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Jornada mensal (h)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Workload, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Dias normais com HE" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding RegularDays, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="HE por dia (h:mm)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding RegularOvertime, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Feriados trabalhados" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Holidays, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Horas no feriado" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding HolidayHours, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                  <TextBlock Text="HE no feriado" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding HolidayOvertime, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}" />
+              <TextBlock Style="{StaticResource WarningText}" Text="{Binding Warnings}" />
+              <Button Content="Lançar em Proventos" HorizontalAlignment="Left" Margin="0,8,0,16" Command="{Binding PostCommand}" />
+              <TextBlock Text="Horas extras já lançadas" Style="{StaticResource FieldLabel}" />
+              <ComboBox DisplayMemberPath="Text" ItemsSource="{Binding PostedItems}" SelectedItem="{Binding Posted}" />
+              <Button Content="Desfazer" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Command="{Binding UndoCommand}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="Memória de cálculo" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+              <TextBox Style="{StaticResource BreakdownBox}" Height="300" Text="{Binding BreakdownText, Mode=OneWay}" />
+              <TextBlock Text="Prévia" Style="{StaticResource SectionTitle}" />
+              <ContentControl ContentTemplate="{StaticResource PlanGrid}" Content="{Binding Plan}" />
+            </StackPanel>
+          </Grid>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem Header="Consignado" DataContext="{Binding PayrollLoan}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <Grid Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="360" />
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Descrição" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Description, UpdateSourceTrigger=LostFocus}" />
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Valor liberado" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Amount, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Juros % a.m." Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Rate, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                  <TextBlock Text="Parcelas" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Installments, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Data da contratação" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding ContractDate, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Vencimento da 1ª parcela" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding FirstDueDate, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="IOF R$ (do contrato)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Iof, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="Tarifas R$" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Fees, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                  <TextBlock Text="Parcela do contrato" Style="{StaticResource FieldLabel}" />
+                  <TextBox ToolTip="Opcional. Se preencher, é esse valor que vai para os lançamentos (o cálculo é estimativa)." Text="{Binding ContractInstallment, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <TextBlock Text="Margem (estimativa)" Style="{StaticResource SectionTitle}" />
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition />
+                  <ColumnDefinition Width="10" />
+                  <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                  <TextBlock Text="Remuneração bruta" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Pay, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                  <TextBlock Text="INSS + IRRF" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding MandatoryDeductions, UpdateSourceTrigger=LostFocus}" />
+                </StackPanel>
+              </Grid>
+              <TextBlock Text="Parcelas consignadas que você já paga" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding CurrentInstallments, UpdateSourceTrigger=LostFocus}" />
+              <Button Content="Puxar salário do mês atual" Style="{StaticResource LinkButton}" HorizontalAlignment="Left" Command="{Binding FillCommand}" />
+              <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}" />
+              <Button Content="Lançar crédito e parcelas" HorizontalAlignment="Left" Margin="0,8,0,0" Command="{Binding PostCommand}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="Memória de cálculo" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+              <TextBox Style="{StaticResource BreakdownBox}" Height="220" Text="{Binding BreakdownText, Mode=OneWay}" />
+              <TextBlock Text="Tabela Price" Style="{StaticResource SectionTitle}" />
+              <DataGrid MaxHeight="240" ItemsSource="{Binding Table}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="Nº" Width="50" Binding="{Binding Number}" />
+                  <DataGridTextColumn Header="Juros" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Interest, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Amortização" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Amortization, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Saldo" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Balance, Converter={StaticResource Currency}}" />
+                </DataGrid.Columns>
+              </DataGrid>
+              <TextBlock Text="Prévia dos lançamentos" Style="{StaticResource SectionTitle}" />
+              <ContentControl ContentTemplate="{StaticResource PlanGrid}" Content="{Binding Plan}" />
+            </StackPanel>
+          </Grid>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem Header="Salário e retroativo" DataContext="{Binding Salary}">
+        <Grid Margin="0,4,0,0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="360" />
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="*" />
+          </Grid.ColumnDefinitions>
+          <StackPanel>
+            <TextBlock Text="A partir do mês (mm/aaaa)" Style="{StaticResource FieldLabel}" />
+            <TextBox Text="{Binding Month, UpdateSourceTrigger=LostFocus}" />
+            <TextBlock Text="Salário novo (R$)" Style="{StaticResource FieldLabel}" />
+            <TextBox Text="{Binding NewSalary, UpdateSourceTrigger=LostFocus}" />
+            <CheckBox Content="Teve retroativo (aumento que valia desde meses antes)" IsChecked="{Binding Retroactive}" />
+            <StackPanel Visibility="{Binding Retroactive, Converter={StaticResource BoolToVisible}}">
+              <TextBlock Text="Meses em atraso (1 a 24)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding MonthsLate, UpdateSourceTrigger=LostFocus}" />
+            </StackPanel>
+            <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}" />
+            <Button Content="Aplicar" HorizontalAlignment="Left" Margin="0,8,0,0" Command="{Binding ApplyCommand}" />
+          </StackPanel>
+          <StackPanel Grid.Column="2">
+            <TextBlock Text="Memória de cálculo" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" />
+            <TextBox Style="{StaticResource BreakdownBox}" Height="200" Text="{Binding BreakdownText, Mode=OneWay}" />
+            <TextBlock Text="Prévia" Style="{StaticResource SectionTitle}" />
+            <ContentControl ContentTemplate="{StaticResource PlanGrid}" Content="{Binding Plan}" />
+          </StackPanel>
+        </Grid>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</UserControl>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Application x:Class="MyFinances.App.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:infra="clr-namespace:MyFinances.App.Infra" xmlns:vm="clr-namespace:MyFinances.App.ViewModels" xmlns:v="clr-namespace:MyFinances.App.Views" ShutdownMode="OnExplicitShutdown" xmlns:app="clr-namespace:MyFinances.App">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Themes/Theme.xaml" />
+        <ResourceDictionary Source="Themes/Icons.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <infra:CurrencyConverter x:Key="Currency" />
+      <infra:DateConverter x:Key="DateText" />
+      <infra:VisibleConverter x:Key="BoolToVisible" />
+      <infra:SignColorConverter x:Key="SignColor" />
+      <infra:StatusColorConverter x:Key="StatusColor" />
+      <infra:NoneVisibleConverter x:Key="NoneVisible" />
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:DashboardViewModel}}" DataType="{x:Type vm:DashboardViewModel}">
+        <v:DashboardView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:FinanceViewModel}}" DataType="{x:Type vm:FinanceViewModel}">
+        <v:FinanceView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:EntriesManagerViewModel}}" DataType="{x:Type vm:EntriesManagerViewModel}">
+        <v:EntriesManagerView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:SimulatorsViewModel}}" DataType="{x:Type vm:SimulatorsViewModel}">
+        <v:SimulatorsView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:ClientsViewModel}}" DataType="{x:Type vm:ClientsViewModel}">
+        <v:ClientsView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:LoansViewModel}}" DataType="{x:Type vm:LoansViewModel}">
+        <v:LoansView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:ImportViewModel}}" DataType="{x:Type vm:ImportViewModel}">
+        <v:ImportView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:BackupViewModel}}" DataType="{x:Type vm:BackupViewModel}">
+        <v:BackupView />
+      </DataTemplate>
+      <DataTemplate x:Key="{DataTemplateKey {x:Type vm:SettingsViewModel}}" DataType="{x:Type vm:SettingsViewModel}">
+        <v:SettingsView />
+      </DataTemplate>
+    </ResourceDictionary>
+  </Application.Resources>
+</Application>

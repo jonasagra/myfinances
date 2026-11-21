@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MyFinances.Core/MyFinances.Core.csproj" />
+  <Project Path="MyFinances.Data/MyFinances.Data.csproj" />
+  <Project Path="MyFinances/MyFinances.csproj" />
+</Solution>

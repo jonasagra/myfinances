@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="MyFinances.App.Views.SettingsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="clr-namespace:MyFinances.App.Views;assembly=MyFinances">
+  <DockPanel Margin="28,22">
+    <StackPanel DockPanel.Dock="Top">
+      <TextBlock Text="Configurações" Style="{StaticResource PageTitle}" />
+    </StackPanel>
+    <TabControl>
+      <TabItem Header="Geral">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel MaxWidth="900" HorizontalAlignment="Left">
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="Finanças pessoais" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel>
+                    <TextBlock Text="Primeiro mês do controle (mm/aaaa)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding FirstMonth}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="2">
+                    <TextBlock Text="Saldo inicial (R$, pode ser negativo)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding OpeningBalance}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="4">
+                    <TextBlock Text="Data de admissão" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding HireDate}" />
+                  </StackPanel>
+                </Grid>
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel>
+                    <TextBlock Text="Jornada mensal (horas)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Workload}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="2">
+                    <TextBlock Text="Vale-transporte (% do salário)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding TvPct}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="4">
+                    <TextBlock Text="Dependentes (IRRF)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Dependents}" />
+                  </StackPanel>
+                </Grid>
+                <CheckBox Content="Descontar vale-transporte" IsChecked="{Binding TransportVoucher}" />
+                <CheckBox Content="Calcular IRRF na folha" IsChecked="{Binding Irrf}" />
+                <CheckBox Content="Painel abre no cenário COM 13º" IsChecked="{Binding ScenarioWith13th}" />
+                <TextBlock Text="Feriados locais (dd/mm, separados por vírgula)" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding LocalHolidays}" />
+              </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="Empréstimos (padrões para contratos novos)" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel>
+                    <TextBlock Text="Multa %" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Penalty}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="2">
+                    <TextBlock Text="Mora % a.m." Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding LateInterest}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="4">
+                    <TextBlock Text="Tolerância (dias)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Tolerance}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="6">
+                    <TextBlock Text="Inadimplente após (dias)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Risk}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="8">
+                    <TextBlock Text="Provisão de perda %" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding Provision}" />
+                  </StackPanel>
+                </Grid>
+                <TextBlock Text="Limite de capital (R$, vazio = sem limite)" Style="{StaticResource FieldLabel}" />
+                <TextBox Width="200" HorizontalAlignment="Left" Text="{Binding CapitalLimit}" />
+              </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="Dados e segurança" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition />
+                  </Grid.ColumnDefinitions>
+                  <StackPanel>
+                    <TextBlock Text="Tamanho máximo de anexo (MB)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding AttachmentMb}" />
+                  </StackPanel>
+                  <StackPanel Grid.Column="2">
+                    <TextBlock Text="Backups automáticos guardados" Style="{StaticResource FieldLabel}" />
+                    <TextBox Text="{Binding BackupCount}" />
+                  </StackPanel>
+                </Grid>
+                <CheckBox Content="Backup automático diário" IsChecked="{Binding AutoBackup}" />
+                <CheckBox Content="Pedir o PIN para mexer em documentos de clientes" IsChecked="{Binding PinForAttachments}" />
+                <WrapPanel>
+                  <Button Content="Definir / trocar PIN" Style="{StaticResource SecondaryButton}" Command="{Binding SetPinCommand}" />
+                  <Button Content="Remover PIN" Style="{StaticResource SecondaryButton}" Command="{Binding RemovePinCommand}" />
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+            <Button Content="Salvar configurações" HorizontalAlignment="Left" Margin="0,0,0,20" Command="{Binding SaveCommand}" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem Header="Tabelas legais">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel MaxWidth="1000" HorizontalAlignment="Left">
+            <TextBlock Text="Valores oficiais por ano. Ano sem tabela usa a do anterior (estimativa)." Style="{StaticResource Hint}" Margin="0,0,0,10" />
+            <WrapPanel Margin="0,0,0,8">
+              <TextBlock Text="Ano:" VerticalAlignment="Center" Margin="0,0,8,10" />
+              <TextBox Width="80" Text="{Binding Year}" />
+              <Button Content="Carregar" Style="{StaticResource SecondaryButton}" Margin="8,0,8,10" Command="{Binding LoadYearCommand}" />
+              <TextBlock Text="Cadastrados:" VerticalAlignment="Center" Margin="12,0,6,10" Style="{StaticResource FieldLabel}" />
+              <ItemsControl VerticalAlignment="Center" Margin="0,0,0,10" ItemsSource="{Binding RegisteredYears}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Border Style="{StaticResource Badge}" Margin="0,0,4,0">
+                      <TextBlock Text="{Binding}" />
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </WrapPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <Border Style="{StaticResource Card}">
+                <StackPanel>
+                  <TextBlock Text="INSS (empregado)" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+                  <TextBlock Text="Salário mínimo" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding MinimumWage}" />
+                  <ItemsControl ItemsSource="{Binding InssBands}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="80" />
+                          </Grid.ColumnDefinitions>
+                          <StackPanel>
+                            <TextBlock Text="Faixa até (R$)" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Until}" />
+                          </StackPanel>
+                          <StackPanel Grid.Column="2">
+                            <TextBlock Text="Alíquota %" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Pct}" />
+                          </StackPanel>
+                        </Grid>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                  <CheckBox Content="Truncar cada faixa nos centavos" IsChecked="{Binding InssTruncate}" />
+                  <CheckBox Content="Confirmado em fonte oficial" IsChecked="{Binding InssConfirmed}" />
+                  <TextBlock Text="Fonte" Style="{StaticResource FieldLabel}" />
+                  <TextBox TextWrapping="Wrap" Text="{Binding InssSource}" />
+                  <TextBlock Text="Seguro-desemprego" Style="{StaticResource SectionTitle}" />
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                      <TextBlock Text="Faixa 1 até (80%)" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding BenefitBand1}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                      <TextBlock Text="Faixa 2 até" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding BenefitBand2}" />
+                    </StackPanel>
+                  </Grid>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                      <TextBlock Text="Valor fixo da faixa 2" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding BenefitFixed2}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                      <TextBlock Text="Teto" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding BenefitCeiling}" />
+                    </StackPanel>
+                  </Grid>
+                  <CheckBox Content="Confirmado em fonte oficial" IsChecked="{Binding BenefitConfirmed}" />
+                </StackPanel>
+              </Border>
+              <Border Grid.Column="2" Style="{StaticResource Card}">
+                <StackPanel>
+                  <TextBlock Text="IRRF mensal" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+                  <ItemsControl ItemsSource="{Binding IrrfBands}">
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate>
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition />
+                          </Grid.ColumnDefinitions>
+                          <StackPanel>
+                            <TextBlock Text="Base até (ou &quot;acima&quot;)" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Until}" />
+                          </StackPanel>
+                          <StackPanel Grid.Column="2">
+                            <TextBlock Text="%" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Pct}" />
+                          </StackPanel>
+                          <StackPanel Grid.Column="4">
+                            <TextBlock Text="Parcela a deduzir" Style="{StaticResource FieldLabel}" />
+                            <TextBox Text="{Binding Deduct}" />
+                          </StackPanel>
+                        </Grid>
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                      <TextBlock Text="Dedução por dependente" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding IrDependent}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                      <TextBlock Text="Desconto simplificado" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding IrSimplified}" />
+                    </StackPanel>
+                  </Grid>
+                  <TextBlock Text="Redução (Lei 15.270/2025)" Style="{StaticResource FieldLabel}" FontWeight="SemiBold" />
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                      <TextBlock Text="Zera até" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding IrRedLimit}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                      <TextBlock Text="Redução máxima" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding IrRedMax}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="4">
+                      <TextBlock Text="Sem redução acima de" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding IrRedEnd}" />
+                    </StackPanel>
+                  </Grid>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition />
+                      <ColumnDefinition Width="8" />
+                      <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                      <TextBlock Text="Constante (R$)" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding IrRedConstant}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                      <TextBlock Text="Fator × rendimento" Style="{StaticResource FieldLabel}" />
+                      <TextBox Text="{Binding IrRedFactor}" />
+                    </StackPanel>
+                  </Grid>
+                  <CheckBox Content="Confirmado em fonte oficial" IsChecked="{Binding IrConfirmed}" />
+                </StackPanel>
+              </Border>
+            </Grid>
+            <WrapPanel Margin="0,0,0,20">
+              <Button Content="Salvar tabelas deste ano" Command="{Binding SaveParametersCommand}" />
+              <Button Content="Apagar tabela editada deste ano" Style="{StaticResource SecondaryButton}" Command="{Binding RestoreParametersCommand}" />
+            </WrapPanel>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+      <TabItem Header="Sobre">
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+          <StackPanel MaxWidth="800" HorizontalAlignment="Left">
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Style="{StaticResource SectionTitle}" Margin="0,0,0,4">
+                  <Run Text="MyFinances" /> <Run Text="{Binding Version, Mode=OneWay}" /></TextBlock>
+                <TextBlock Style="{StaticResource FieldLabel}" Margin="0,10,0,6">
+                  <Run Text="Pasta de dados:" /> <Run Text="{Binding DataFolder, Mode=OneWay}" /></TextBlock>
+                <WrapPanel>
+                  <Button Content="Abrir pasta de dados" Style="{StaticResource SecondaryButton}" Command="{Binding OpenFolderCommand}" />
+                  <Button Content="Abrir logs" Style="{StaticResource SecondaryButton}" Command="{Binding OpenLogsCommand}" />
+                </WrapPanel>
+              </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+              <StackPanel>
+                <TextBlock Text="Modo criador" Style="{StaticResource SectionTitle}" Margin="0,0,0,4" />
+                <TextBlock Text="Esconde a tela de doação neste usuário do Windows." TextWrapping="Wrap" Margin="0,0,0,8" />
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="Ativo: " VerticalAlignment="Center" />
+                  <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,12,0" Text="{Binding CreatorModeText}" />
+                  <Button Content="Ativar / desativar" Style="{StaticResource SecondaryButton}" Command="{Binding CreatorModeCommand}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}" BorderBrush="{StaticResource DangerBrush}">
+              <StackPanel>
+                <TextBlock Text="Apagar dados locais" Style="{StaticResource SectionTitle}" Foreground="{StaticResource DangerBrush}" Margin="0,0,0,4" />
+                <TextBlock Text="Desinstalar não apaga seus dados. Para apagar tudo, faça um backup antes." TextWrapping="Wrap" Margin="0,0,0,8" />
+                <Button Content="Apagar todos os meus dados..." Style="{StaticResource DangerButton}" HorizontalAlignment="Left" Command="{Binding DeleteDataCommand}" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</UserControl>

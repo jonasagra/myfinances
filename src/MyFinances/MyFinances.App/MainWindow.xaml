@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="MyFinances.App.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="MyFinances" Height="860" Width="1380" MinHeight="620" MinWidth="1000" WindowStartupLocation="CenterScreen" Style="{StaticResource DarkWindow}" Icon="Resources/myfinances.ico" xmlns:app="clr-namespace:MyFinances.App;assembly=MyFinances">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <Style x:Key="MenuText" TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="12,0,0,0" />
+        <Style.Triggers>
+          <DataTrigger Value="True" Binding="{Binding DataContext.MenuCollapsed, RelativeSource={RelativeSource AncestorType=Window}}">
+            <Setter Property="Visibility" Value="Collapsed" />
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+      <Style x:Key="MenuItem" TargetType="{x:Type RadioButton}" BasedOn="{StaticResource NavItem}">
+        <Style.Triggers>
+          <DataTrigger Value="True" Binding="{Binding DataContext.MenuCollapsed, RelativeSource={RelativeSource AncestorType=Window}}">
+            <Setter Property="FrameworkElement.ToolTip" Value="{Binding Title}" />
+            <Setter Property="Padding" Value="0,10" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition>
+        <FrameworkContentElement.Style>
+          <Style TargetType="{x:Type ColumnDefinition}">
+            <Setter Property="Width" Value="232" />
+            <Style.Triggers>
+              <DataTrigger Value="True" Binding="{Binding MenuCollapsed}">
+                <Setter Property="Width" Value="72" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </FrameworkContentElement.Style>
+      </ColumnDefinition>
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Border Background="{StaticResource BackgroundBrush}" BorderBrush="{StaticResource LineBrush}" BorderThickness="0,0,1,0">
+      <DockPanel Margin="10,16">
+        <DockPanel Dock="Top" Margin="4,0,0,22" Height="40" Visibility="{Binding MenuCollapsed, Converter={StaticResource BoolToVisible}, ConverterParameter=invert}">
+          <Button DockPanel.Dock="Right" Style="{StaticResource IconButton}" Width="32" Height="32" ToolTip="Recolher menu" VerticalAlignment="Center" Command="{Binding ToggleMenuCommand}">
+            <Viewbox Width="18" Height="18">
+              <Path Data="{StaticResource Icon.Sidebar}" Style="{StaticResource IconPath}" />
+            </Viewbox>
+          </Button>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <ContentControl ContentTemplate="{StaticResource Logo}" Width="30" Height="30" Focusable="False" />
+            <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+              <TextBlock Text="MyFinances" FontSize="17" FontWeight="SemiBold" />
+              <TextBlock FontSize="11" Foreground="{StaticResource MutedTextBrush}" Text="{Binding Version}" />
+            </StackPanel>
+          </StackPanel>
+        </DockPanel>
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,14" Visibility="{Binding MenuCollapsed, Converter={StaticResource BoolToVisible}}">
+          <ContentControl ContentTemplate="{StaticResource Logo}" Width="28" Height="28" Focusable="False" HorizontalAlignment="Center" Margin="0,6,0,14" />
+          <Button Style="{StaticResource IconButton}" Width="36" Height="32" ToolTip="Expandir menu" HorizontalAlignment="Center" Command="{Binding ToggleMenuCommand}">
+            <Viewbox Width="18" Height="18">
+              <Path Data="{StaticResource Icon.Sidebar}" Style="{StaticResource IconPath}" />
+            </Viewbox>
+          </Button>
+        </StackPanel>
+        <Button DockPanel.Dock="Bottom" Style="{StaticResource LinkButton}" HorizontalAlignment="Stretch" Margin="0" Padding="0,9" ToolTip="Doação voluntária — o app é e continua gratuito" Command="{Binding DonateCommand}">
+          <StackPanel Orientation="Horizontal">
+            <Viewbox Width="17" Height="17">
+              <Path Data="{StaticResource Icon.Heart}" Style="{StaticResource IconPath}" />
+            </Viewbox>
+            <TextBlock Text="Apoiar o projeto" Style="{StaticResource MenuText}" Margin="9,0,0,0" />
+          </StackPanel>
+        </Button>
+        <ItemsControl ItemsSource="{Binding Items}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <RadioButton GroupName="menu" Style="{StaticResource MenuItem}" IsChecked="{Binding Active, Mode=TwoWay}">
+                <StackPanel Orientation="Horizontal">
+                  <Viewbox Width="19" Height="19">
+                    <Path Style="{StaticResource IconPath}" Data="{Binding Icon}" />
+                  </Viewbox>
+                  <TextBlock Style="{StaticResource MenuText}" Text="{Binding Title}" />
+                </StackPanel>
+              </RadioButton>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </DockPanel>
+    </Border>
+    <ContentControl Grid.Column="1" Margin="0" Content="{Binding CurrentScreen}" />
+  </Grid>
+</Window>

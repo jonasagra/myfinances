@@ -1,0 +1,21 @@
+# build
+bin/
+obj/
+app/
+_decomp/
+
+# dados locais do app (nunca publicar)
+*.db
+*.db-wal
+*.db-shm
+*.mfbak
+key.dat
+local.json
+creator-mode.txt
+logs/
+attachments/
+backups/
+
+# IDE
+.vs/
+*.user

@@ -1,0 +1,79 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>MyFinances</AssemblyName>
+    <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+    <OutputType>WinExe</OutputType>
+    <UseWPF>True</UseWPF>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>14.0</LangVersion>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Remove="MyFinances.App\App.xaml" />
+    <ApplicationDefinition Include="MyFinances.App\App.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="app.xaml" />
+    <Page Remove="MyFinances.App.Views\BackupView.xaml" />
+    <Page Remove="MyFinances.App.Views\BalanceAdjustmentWindow.xaml" />
+    <Page Remove="MyFinances.App.Views\ClientsView.xaml" />
+    <Page Remove="MyFinances.App.Views\DashboardView.xaml" />
+    <Page Remove="MyFinances.App.Views\DonationWindow.xaml" />
+    <Page Remove="MyFinances.App.Views\EntriesManagerView.xaml" />
+    <Page Remove="MyFinances.App.Views\EntryWindow.xaml" />
+    <Page Remove="MyFinances.App.Views\FinanceView.xaml" />
+    <Page Remove="MyFinances.App.Views\ImportView.xaml" />
+    <Page Remove="MyFinances.App.Views\LoansView.xaml" />
+    <Page Remove="MyFinances.App.Views\PayslipImportWindow.xaml" />
+    <Page Remove="MyFinances.App.Views\PinWindow.xaml" />
+    <Page Remove="MyFinances.App.Views\SettingsView.xaml" />
+    <Page Remove="MyFinances.App.Views\SimulatorsView.xaml" />
+    <Page Remove="MyFinances.App.Views\TextInputWindow.xaml" />
+    <Page Remove="MyFinances.App.Views\TextViewWindow.xaml" />
+    <Page Remove="MyFinances.App\MainWindow.xaml" />
+    <Page Remove="themes\icons.xaml" />
+    <Page Remove="themes\theme.xaml" />
+    <Page Include="MyFinances.App.Views\BackupView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/backupview.xaml" />
+    <Page Include="MyFinances.App.Views\BalanceAdjustmentWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/balanceadjustmentwindow.xaml" />
+    <Page Include="MyFinances.App.Views\ClientsView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/clientsview.xaml" />
+    <Page Include="MyFinances.App.Views\DashboardView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/dashboardview.xaml" />
+    <Page Include="MyFinances.App.Views\DonationWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/donationwindow.xaml" />
+    <Page Include="MyFinances.App.Views\EntriesManagerView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/entriesmanagerview.xaml" />
+    <Page Include="MyFinances.App.Views\EntryWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/entrywindow.xaml" />
+    <Page Include="MyFinances.App.Views\FinanceView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/financeview.xaml" />
+    <Page Include="MyFinances.App.Views\ImportView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/importview.xaml" />
+    <Page Include="MyFinances.App.Views\LoansView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/loansview.xaml" />
+    <Page Include="MyFinances.App.Views\PayslipImportWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/payslipimportwindow.xaml" />
+    <Page Include="MyFinances.App.Views\PinWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/pinwindow.xaml" />
+    <Page Include="MyFinances.App.Views\SettingsView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/settingsview.xaml" />
+    <Page Include="MyFinances.App.Views\SimulatorsView.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/simulatorsview.xaml" />
+    <Page Include="MyFinances.App.Views\TextInputWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/textinputwindow.xaml" />
+    <Page Include="MyFinances.App.Views\TextViewWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="views/textviewwindow.xaml" />
+    <Page Include="MyFinances.App\MainWindow.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="mainwindow.xaml" />
+    <Page Include="themes\icons.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="themes/icons.xaml" />
+    <Page Include="themes\theme.xaml" Generator="MSBuild:Compile" SubType="Designer" LogicalName="themes/theme.xaml" />
+    <Resource Remove="resources\myfinances.ico" />
+    <Resource Remove="resources\logo.png" />
+    <Resource Include="resources\myfinances.ico" LogicalName="resources/myfinances.ico" />
+    <Resource Include="resources\logo.png" LogicalName="resources/logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="QRCoder" Version="1.8.1" />
+    <ProjectReference Include="..\MyFinances.Core\MyFinances.Core.csproj" />
+    <ProjectReference Include="..\MyFinances.Data\MyFinances.Data.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <NoWarn>$(NoWarn);CS8600;CS8601;CS8602;CS8603;CS8604;CS8618;CS8619;CS8620;CS8625;CS8629;CS8714</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Product>MyFinances</Product>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
+</Project>

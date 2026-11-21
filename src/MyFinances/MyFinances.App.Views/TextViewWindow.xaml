@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="MyFinances.App.Views.TextViewWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="MyFinances" Width="760" Height="620" MinWidth="480" MinHeight="300" WindowStartupLocation="CenterOwner" Style="{StaticResource DarkWindow}" ShowInTaskbar="False" xmlns:views="clr-namespace:MyFinances.App.Views;assembly=MyFinances">
+  <DockPanel Margin="20">
+    <TextBlock Name="Heading" DockPanel.Dock="Top" Style="{StaticResource PageTitle}" FontSize="20" />
+    <Button DockPanel.Dock="Bottom" Content="Fechar" IsCancel="True" IsDefault="True" HorizontalAlignment="Right" Margin="0,12,0,0" />
+    <TextBox Name="Body" Style="{StaticResource BreakdownBox}" />
+  </DockPanel>
+</Window>

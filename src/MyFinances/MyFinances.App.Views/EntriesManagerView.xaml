@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="MyFinances.App.Views.EntriesManagerView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="clr-namespace:MyFinances.App.Views;assembly=MyFinances">
+  <Grid Margin="28,22">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <StackPanel>
+      <TextBlock Text="Gerenciar lançamentos" Style="{StaticResource PageTitle}" />
+      <TextBlock Text="Escolha um lançamento para ver todos os meses em que ele aparece e mudar tudo de uma vez." Style="{StaticResource PageSubtitle}" />
+    </StackPanel>
+    <Grid Row="1" Margin="0,16,0,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="3*" MinWidth="520" />
+        <ColumnDefinition Width="20" />
+        <ColumnDefinition Width="2*" />
+      </Grid.ColumnDefinitions>
+      <DockPanel>
+        <Border DockPanel.Dock="Top" Style="{StaticResource Card}" Padding="12,10" Margin="0,0,0,10">
+          <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="100" />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="Buscar pelo nome" Style="{StaticResource FieldLabel}" />
+                <TextBox Name="SearchBox" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="Tipo" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding KindOptions}" SelectedItem="{Binding KindFilter}" Height="{Binding ActualHeight, ElementName=SearchBox}" />
+              </StackPanel>
+              <StackPanel Grid.Column="4">
+                <TextBlock Text="Situação" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding SituationOptions}" SelectedItem="{Binding SituationFilter}" Height="{Binding ActualHeight, ElementName=SearchBox}" />
+              </StackPanel>
+              <StackPanel Grid.Column="6">
+                <TextBlock Text="Aparece em" Style="{StaticResource FieldLabel}" ToolTip="mm/aaaa: só o que está lançado nesse mês" />
+                <TextBox ToolTip="mm/aaaa: só o que está lançado nesse mês" Text="{Binding ActiveIn, UpdateSourceTrigger=PropertyChanged}" />
+              </StackPanel>
+            </Grid>
+            <DockPanel Margin="0,6,0,0">
+              <Button DockPanel.Dock="Right" Content="Limpar filtros" Style="{StaticResource LinkButton}" Margin="0" Command="{Binding ClearFiltersCommand}" Visibility="{Binding HasFilters, Converter={StaticResource BoolToVisible}}" />
+              <TextBlock Style="{StaticResource Hint}" VerticalAlignment="Center" Margin="0" Text="{Binding CountText}" />
+            </DockPanel>
+          </StackPanel>
+        </Border>
+        <DataGrid ItemsSource="{Binding Series}" SelectedItem="{Binding Selected, Mode=TwoWay}">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Tipo" Width="92" Binding="{Binding Kind}" />
+            <DataGridTextColumn Header="Lançamento" Width="*" MinWidth="150" Binding="{Binding Name}" />
+            <DataGridTextColumn Header="Meses" SortMemberPath="FirstKey" Width="190" Binding="{Binding Months}" />
+            <DataGridTextColumn Header="Parcela" Width="96" Binding="{Binding Installments}" />
+            <DataGridTextColumn Header="Valor" SortMemberPath="LastAmount" Width="105" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding LastAmount, Converter={StaticResource Currency}}" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </DockPanel>
+      <TextBlock Grid.Column="2" Text="Selecione um lançamento à esquerda." Style="{StaticResource Hint}" Visibility="{Binding HasSelection, Converter={StaticResource BoolToVisible}, ConverterParameter=invert}" />
+      <DockPanel Grid.Column="2" Visibility="{Binding HasSelection, Converter={StaticResource BoolToVisible}}">
+        <TextBlock DockPanel.Dock="Top" Style="{StaticResource SectionTitle}" Margin="0,0,0,6" Text="{Binding SelectedTitle}" />
+        <ScrollViewer DockPanel.Dock="Bottom" VerticalScrollBarVisibility="Auto" MaxHeight="520" Margin="0,10,0,0">
+          <StackPanel>
+            <Border Style="{StaticResource Card}" Margin="0,0,0,10" Visibility="{Binding IsInstallment, Converter={StaticResource BoolToVisible}}">
+              <DockPanel>
+                <Button DockPanel.Dock="Right" Content="Completar parcelas" Margin="0" Command="{Binding CompleteCommand}" />
+                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0" Text="{Binding MissingText}" />
+              </DockPanel>
+            </Border>
+            <Expander Header="Tabela Price deste empréstimo" Margin="0,0,0,10" Visibility="{Binding IsInstallment, Converter={StaticResource BoolToVisible}}">
+              <StackPanel Margin="0,8,0,0">
+                <TextBlock Text="Valor financiado (o que o contrato chama de valor financiado ou saldo devedor inicial)" Style="{StaticResource FieldLabel}" TextWrapping="Wrap" />
+                <TextBox Margin="0,0,0,8" Text="{Binding Financed, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Style="{StaticResource WarningText}" TextWrapping="Wrap" Text="{Binding PriceError}" />
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,8" Text="{Binding PriceInfo}" />
+                <DataGrid Height="260" ItemsSource="{Binding Price}">
+                  <DataGrid.Columns>
+                    <DataGridTextColumn Header="Nº" Width="40" Binding="{Binding Number}" />
+                    <DataGridTextColumn Header="Mês" Width="80" Binding="{Binding Month}" />
+                    <DataGridTextColumn Header="Juros" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Interest, Converter={StaticResource Currency}}" />
+                    <DataGridTextColumn Header="Amortização" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Amortization, Converter={StaticResource Currency}}" />
+                    <DataGridTextColumn Header="Saldo" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Balance, Converter={StaticResource Currency}}" />
+                  </DataGrid.Columns>
+                </DataGrid>
+              </StackPanel>
+            </Expander>
+            <Border Style="{StaticResource Card}" Margin="0,0,0,10" Visibility="{Binding IsFixed, Converter={StaticResource BoolToVisible}}">
+              <DockPanel>
+                <Button DockPanel.Dock="Right" Content="Repetir" Margin="0" VerticalAlignment="Bottom" Command="{Binding RepeatCommand}" />
+                <StackPanel Margin="0,0,12,0">
+                  <TextBlock Text="Repetir o último valor até (mm/aaaa)" Style="{StaticResource FieldLabel}" />
+                  <TextBox Text="{Binding Until, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+              </DockPanel>
+            </Border>
+            <Border Style="{StaticResource Card}" Margin="0">
+              <StackPanel>
+                <TextBlock Text="Nos meses marcados" Style="{StaticResource FieldLabel}" Margin="0,0,0,8" />
+                <DockPanel Margin="0,0,0,8">
+                  <Button DockPanel.Dock="Right" Content="Mudar valor" Margin="0" Width="130" Command="{Binding ChangeAmountCommand}" />
+                  <TextBox Margin="0,0,10,0" Text="{Binding NewAmount, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+                <DockPanel Margin="0,0,0,8">
+                  <Button DockPanel.Dock="Right" Content="Renomear" Style="{StaticResource SecondaryButton}" Margin="0" Width="130" Command="{Binding RenameCommand}" />
+                  <TextBox Margin="0,0,10,0" Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+                <Button Content="Excluir dos meses marcados" Style="{StaticResource DangerButton}" HorizontalAlignment="Left" Margin="0" Command="{Binding DeleteCommand}" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+          <Button Content="Marcar todos" Style="{StaticResource LinkButton}" Command="{Binding CheckAllCommand}" />
+          <Button Content="Desmarcar todos" Style="{StaticResource LinkButton}" Command="{Binding CheckNoneCommand}" />
+        </StackPanel>
+        <DataGrid ItemsSource="{Binding Occurrences}" MouseDoubleClick="Occurrences_MouseDoubleClick">
+          <DataGrid.Columns>
+            <DataGridTemplateColumn Header="" Width="40">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <CheckBox HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="{Binding Checked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            <DataGridTextColumn Header="Mês" SortMemberPath="Key" Width="100" Binding="{Binding Month}" />
+            <DataGridTextColumn Header="Lançamento" Width="*" Binding="{Binding Description}" />
+            <DataGridTextColumn Header="Valor" SortMemberPath="Amount" Width="110" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Amount, Converter={StaticResource Currency}}" />
+          </DataGrid.Columns>
+        </DataGrid>
+      </DockPanel>
+    </Grid>
+  </Grid>
+</UserControl>

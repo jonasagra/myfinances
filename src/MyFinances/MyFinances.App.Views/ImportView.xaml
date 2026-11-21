@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="MyFinances.App.Views.ImportView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="clr-namespace:MyFinances.App.Views;assembly=MyFinances">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="28,22">
+      <TextBlock Text="Importar planilha" Style="{StaticResource PageTitle}" />
+      <TextBlock Text="Traz os lançamentos do Financeiro.xlsm. Nada é gravado antes de você confirmar." Style="{StaticResource PageSubtitle}" />
+      <Border Style="{StaticResource Card}">
+        <StackPanel>
+          <TextBlock Text="1. Arquivo" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+          <DockPanel>
+            <Button DockPanel.Dock="Right" Content="Ler" Margin="8,0,0,10" Command="{Binding ReadCommand}" />
+            <Button DockPanel.Dock="Right" Content="Escolher arquivo..." Style="{StaticResource SecondaryButton}" Margin="8,0,0,10" Command="{Binding ChooseCommand}" />
+            <TextBox IsReadOnly="True" Text="{Binding File}" />
+          </DockPanel>
+          <CheckBox Content="Incluir abas ocultas (meses futuros que a planilha deixou escondidos)" IsChecked="{Binding IncludeHidden}" />
+          <TextBlock Style="{StaticResource Hint}" Text="{Binding Status}" />
+        </StackPanel>
+      </Border>
+      <StackPanel Visibility="{Binding HasReading, Converter={StaticResource BoolToVisible}}">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="16" />
+            <ColumnDefinition Width="2*" />
+          </Grid.ColumnDefinitions>
+          <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+            <StackPanel>
+              <TextBlock Text="2. Mapeamento das tabelas" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+              <ItemsControl ItemsSource="{Binding Mappings}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Grid Margin="0,0,0,4">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition />
+                      </Grid.ColumnDefinitions>
+                      <TextBlock VerticalAlignment="Center" FontWeight="SemiBold" Text="{Binding Prefix}" />
+                      <TextBlock Grid.Column="1" VerticalAlignment="Center" Style="{StaticResource FieldLabel}" Text="{Binding Quantity}" />
+                      <ComboBox Grid.Column="2" DisplayMemberPath="Name" ItemsSource="{Binding KindOptions}" SelectedItem="{Binding Kind}" />
+                      <ComboBox Grid.Column="4" ToolTip="Coluna da descrição" ItemsSource="{Binding Columns}" SelectedItem="{Binding DescriptionColumn}" />
+                      <ComboBox Grid.Column="6" ToolTip="Coluna do valor" ItemsSource="{Binding Columns}" SelectedItem="{Binding AmountColumn}" />
+                    </Grid>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <Button Content="Atualizar prévia" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Command="{Binding PreviewCommand}" />
+            </StackPanel>
+          </Border>
+          <Border Grid.Column="2" Style="{StaticResource Card}" Margin="0,0,0,12">
+            <StackPanel>
+              <TextBlock Text="3. Meses" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+              <DataGrid Height="230" IsReadOnly="False" ItemsSource="{Binding Months}">
+                <DataGrid.Columns>
+                  <DataGridCheckBoxColumn Header="Importar" Width="70" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" />
+                  <DataGridTextColumn Header="Aba" Width="*" IsReadOnly="True" Binding="{Binding Sheet}" />
+                  <DataGridTextColumn Header="Salário" Width="100" IsReadOnly="True" Binding="{Binding Salary, Converter={StaticResource Currency}}" />
+                  <DataGridCheckBoxColumn Header="Oculta" Width="60" IsReadOnly="True" Binding="{Binding Hidden}" />
+                </DataGrid.Columns>
+              </DataGrid>
+              <CheckBox Content="Importar salário base e faltas de cada mês" IsChecked="{Binding ImportSalaryAndAbsences}" />
+              <CheckBox Content="Usar o primeiro mês da planilha como início do controle" IsChecked="{Binding AdjustFirstMonth}" />
+            </StackPanel>
+          </Border>
+        </Grid>
+        <TextBlock Text="4. Prévia — marque o que entra" Style="{StaticResource SectionTitle}" />
+        <WrapPanel Margin="0,0,0,8">
+          <Button Content="Marcar todas" Style="{StaticResource SecondaryButton}" Command="{Binding CheckAllCommand}" />
+          <Button Content="Desmarcar todas" Style="{StaticResource SecondaryButton}" Command="{Binding UncheckAllCommand}" />
+          <TextBlock VerticalAlignment="Center" Margin="8,0,0,0" Text="{Binding Summary}" />
+        </WrapPanel>
+        <DataGrid Height="380" IsReadOnly="False" ItemsSource="{Binding Rows}">
+          <DataGrid.Columns>
+            <DataGridCheckBoxColumn Header="✓" Width="36" Binding="{Binding Selected, UpdateSourceTrigger=PropertyChanged}" />
+            <DataGridTextColumn Header="Mês" Width="80" IsReadOnly="True" Binding="{Binding Month}" />
+            <DataGridTextColumn Header="Tipo" Width="85" IsReadOnly="True" Binding="{Binding KindText}" />
+            <DataGridTextColumn Header="Descrição" Width="2*" IsReadOnly="True" Binding="{Binding Description}" />
+            <DataGridTextColumn Header="Valor" Width="100" IsReadOnly="True" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Amount, Converter={StaticResource Currency}}" />
+            <DataGridTextColumn Header="Como foi lido" Width="140" IsReadOnly="True" Binding="{Binding AsRead}" />
+            <DataGridTextColumn Header="Aviso" Width="2*" IsReadOnly="True" Binding="{Binding Notice}" />
+            <DataGridTextColumn Header="Origem" Width="120" IsReadOnly="True" Binding="{Binding Table}" />
+          </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="5. Confirmar e gravar" HorizontalAlignment="Left" Margin="0,12,0,0" Command="{Binding ConfirmCommand}" />
+      </StackPanel>
+      <Border Style="{StaticResource Card}" Margin="0,20,0,0">
+        <StackPanel>
+          <TextBlock Text="Importações já feitas" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+          <ComboBox DisplayMemberPath="Text" ItemsSource="{Binding Imports}" SelectedItem="{Binding SelectedImport}" />
+          <Button Content="Desfazer importação escolhida" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Command="{Binding UndoCommand}" />
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

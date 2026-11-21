@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="MyFinances.App.Views.ClientsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="clr-namespace:MyFinances.App.Views;assembly=MyFinances">
+  <Grid Margin="28,22">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="420" />
+      <ColumnDefinition Width="20" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <StackPanel Grid.ColumnSpan="3">
+      <TextBlock Text="Clientes" Style="{StaticResource PageTitle}" />
+    </StackPanel>
+    <DockPanel Grid.Row="1">
+      <StackPanel DockPanel.Dock="Top">
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Content="+ Novo cliente" Margin="8,0,0,10" Command="{Binding NewCommand}" />
+          <TextBox ToolTip="Buscar por nome, CPF ou telefone" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+        </DockPanel>
+        <CheckBox Content="Mostrar inativos" IsChecked="{Binding ShowInactive}" />
+      </StackPanel>
+      <DataGrid ItemsSource="{Binding ItemList}" SelectedItem="{Binding Selected}">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Nome" Width="*" Binding="{Binding FullName}" />
+          <DataGridTextColumn Header="CPF" Width="120" Binding="{Binding CpfMasked}" />
+          <DataGridTextColumn Header="Empr." Width="55" Binding="{Binding LoanCount}" />
+          <DataGridTextColumn Header="Docs" Width="50" Binding="{Binding AttachmentCount}" />
+        </DataGrid.Columns>
+      </DataGrid>
+    </DockPanel>
+    <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto">
+      <StackPanel>
+        <TextBlock Style="{StaticResource SectionTitle}" Margin="0,0,0,8" Text="{Binding FormTitle}" />
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+          <StackPanel>
+            <TextBlock Text="Nome completo *" Style="{StaticResource FieldLabel}" />
+            <TextBox MaxLength="150" Text="{Binding Form.FullName}" />
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="CPF *" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="14" Text="{Binding Cpf, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock FontSize="12" Foreground="{StaticResource AccentLightBrush}" Margin="0,-6,0,6" Text="{Binding CpfStatus}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="Nascimento (dd/mm/aaaa)" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding Birth}" />
+              </StackPanel>
+              <StackPanel Grid.Column="4">
+                <TextBlock Text="Renda informada (R$)" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding Income}" />
+              </StackPanel>
+            </Grid>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="Telefone / WhatsApp" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="20" Text="{Binding Form.Phone}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="E-mail" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="120" Text="{Binding Form.Email}" />
+              </StackPanel>
+            </Grid>
+            <TextBlock Text="Redes sociais (Instagram, Facebook...)" Style="{StaticResource FieldLabel}" />
+            <TextBox MaxLength="300" Text="{Binding Form.SocialMedia}" />
+          </StackPanel>
+        </Border>
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+          <StackPanel>
+            <TextBlock Text="Endereço" Style="{StaticResource FieldLabel}" FontWeight="SemiBold" />
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="90" />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="CEP" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="9" Text="{Binding Form.ZipCode}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="Logradouro" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="150" Text="{Binding Form.Street}" />
+              </StackPanel>
+              <StackPanel Grid.Column="4">
+                <TextBlock Text="Número" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="20" Text="{Binding Form.Number}" />
+              </StackPanel>
+            </Grid>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="80" />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="Complemento" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="80" Text="{Binding Form.AddressLine2}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="Bairro" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="80" Text="{Binding Form.District}" />
+              </StackPanel>
+              <StackPanel Grid.Column="4">
+                <TextBlock Text="Cidade" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="80" Text="{Binding Form.City}" />
+              </StackPanel>
+              <StackPanel Grid.Column="6">
+                <TextBlock Text="UF" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding StateCodes}" SelectedItem="{Binding Form.StateCode}" />
+              </StackPanel>
+            </Grid>
+            <TextBlock Text="Observações" Style="{StaticResource FieldLabel}" />
+            <TextBox AcceptsReturn="True" TextWrapping="Wrap" Height="70" MaxLength="2000" VerticalScrollBarVisibility="Auto" Text="{Binding Form.Notes}" />
+          </StackPanel>
+        </Border>
+        <TextBlock Style="{StaticResource ErrorText}" Text="{Binding Error}" />
+        <WrapPanel Margin="0,0,0,16">
+          <Button Content="Salvar cliente" Command="{Binding SaveCommand}" />
+          <Button Content="Ativar / inativar" Style="{StaticResource SecondaryButton}" ToolTip="Inativo some da lista e não pode receber empréstimo novo, mas o histórico fica" Command="{Binding ToggleActiveCommand}" />
+          <Button Content="Excluir cliente" Style="{StaticResource DangerButton}" Command="{Binding DeleteCommand}" />
+        </WrapPanel>
+        <Border Style="{StaticResource Card}" Margin="0">
+          <StackPanel>
+            <TextBlock Text="Documentos anexados" Style="{StaticResource SectionTitle}" Margin="0,0,0,4" />
+            <TextBlock Style="{StaticResource Hint}" Margin="0,0,0,8" Text="{Binding AttachmentRule}" />
+            <TextBlock Text="Salve o cliente antes de anexar." Style="{StaticResource WarningText}" Visibility="{Binding IsNew, Converter={StaticResource BoolToVisible}}" />
+            <WrapPanel Margin="0,0,0,8">
+              <ComboBox DisplayMemberPath="Name" Width="220" Margin="0,0,8,0" ItemsSource="{Binding AttachmentKinds}" SelectedItem="{Binding AttachmentKind}" />
+              <Button Content="+ Anexar arquivo" VerticalAlignment="Top" Command="{Binding AddAttachmentCommand}" />
+            </WrapPanel>
+            <DataGrid Height="180" ItemsSource="{Binding Attachments}" SelectedItem="{Binding SelectedAttachment}">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="Tipo" Width="170" Binding="{Binding Kind}" />
+                <DataGridTextColumn Header="Arquivo" Width="*" Binding="{Binding Name}" />
+                <DataGridTextColumn Header="Tamanho" Width="80" Binding="{Binding Size}" />
+                <DataGridTextColumn Header="Data" Width="130" Binding="{Binding Data, Converter={StaticResource DateText}}" />
+              </DataGrid.Columns>
+            </DataGrid>
+            <WrapPanel Margin="0,10,0,0">
+              <Button Content="Abrir" Style="{StaticResource SecondaryButton}" Command="{Binding OpenAttachmentCommand}" />
+              <Button Content="Substituir" Style="{StaticResource SecondaryButton}" Command="{Binding ReplaceAttachmentCommand}" />
+              <Button Content="Remover" Style="{StaticResource DangerButton}" Command="{Binding RemoveAttachmentCommand}" />
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

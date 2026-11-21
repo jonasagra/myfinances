@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl x:Class="MyFinances.App.Views.LoansView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:views="clr-namespace:MyFinances.App.Views;assembly=MyFinances">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <DataTemplate x:Key="LoanTermsFields">
+        <StackPanel>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Contratação (dd/mm/aaaa)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding ContractDate}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="1º vencimento" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding FirstDueDate}" />
+            </StackPanel>
+            <StackPanel Grid.Column="4">
+              <TextBlock Text="Parcelas" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Installments}" />
+            </StackPanel>
+          </Grid>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Periodicidade" Style="{StaticResource FieldLabel}" />
+              <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding Frequencies}" SelectedItem="{Binding Frequency}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Style="{StaticResource FieldLabel}" Text="{Binding RateLabel}" />
+              <TextBox Text="{Binding Rate}" />
+            </StackPanel>
+            <StackPanel Grid.Column="4">
+              <TextBlock Text="Método" Style="{StaticResource FieldLabel}" />
+              <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding Methods}" SelectedItem="{Binding Method}" />
+            </StackPanel>
+          </Grid>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="2*" />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Carência" Style="{StaticResource FieldLabel}" />
+              <ComboBox DisplayMemberPath="Name" ItemsSource="{Binding GraceTypes}" SelectedItem="{Binding Grace}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="Períodos de carência" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding GracePeriods}" />
+            </StackPanel>
+            <StackPanel Grid.Column="4">
+              <TextBlock Text="Tarifa (R$, na 1ª)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Fee}" />
+            </StackPanel>
+          </Grid>
+          <TextBlock Text="Regras de atraso" FontWeight="SemiBold" Margin="0,4,0,6" Style="{StaticResource FieldLabel}" />
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+              <TextBlock Text="Multa %" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Penalty}" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="Mora % a.m." Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding LateInterest}" />
+            </StackPanel>
+            <StackPanel Grid.Column="4">
+              <TextBlock Text="Tolerância (dias)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Tolerance}" />
+            </StackPanel>
+            <StackPanel Grid.Column="6">
+              <TextBlock Text="Inadimplente após (dias)" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Risk}" />
+            </StackPanel>
+            <StackPanel Grid.Column="8">
+              <TextBlock Text="Provisão de perda %" Style="{StaticResource FieldLabel}" />
+              <TextBox Text="{Binding Provision}" />
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+      </DataTemplate>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <Grid Margin="28,22">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="430" />
+      <ColumnDefinition Width="20" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <StackPanel Grid.ColumnSpan="3">
+      <TextBlock Text="Empréstimos a clientes" Style="{StaticResource PageTitle}" />
+    </StackPanel>
+    <DockPanel Grid.Row="1">
+      <StackPanel DockPanel.Dock="Top">
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Content="+ Novo empréstimo" Margin="8,0,0,10" Command="{Binding NewCommand}" />
+          <TextBox ToolTip="Buscar por cliente ou número" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+        </DockPanel>
+        <ComboBox ItemsSource="{Binding Filters}" SelectedItem="{Binding Filter}" />
+      </StackPanel>
+      <DataGrid ItemsSource="{Binding ItemList}" SelectedItem="{Binding Selected}">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Nº" Width="40" Binding="{Binding Code}" />
+          <DataGridTextColumn Header="Cliente" Width="*" Binding="{Binding Client}" />
+          <DataGridTextColumn Header="Em aberto" Width="100" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding TotalBalance, Converter={StaticResource Currency}}" />
+          <DataGridTemplateColumn Header="Situação" Width="110">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate>
+                <TextBlock FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Text="{Binding StatusText}" Foreground="{Binding Status, Converter={StaticResource StatusColor}}" />
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+    </DockPanel>
+    <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" Visibility="{Binding DraftMode, Converter={StaticResource BoolToVisible}}">
+      <StackPanel>
+        <TextBlock Text="Novo empréstimo" Style="{StaticResource SectionTitle}" Margin="0,0,0,8" />
+        <Border Style="{StaticResource Card}" Margin="0,0,0,12">
+          <StackPanel>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="Cliente" Style="{StaticResource FieldLabel}" />
+                <ComboBox DisplayMemberPath="FullName" ItemsSource="{Binding Clients}" SelectedItem="{Binding NewLoanClient}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="Capital emprestado (R$)" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding Draft.Capital}" />
+              </StackPanel>
+            </Grid>
+            <ContentControl ContentTemplate="{StaticResource LoanTermsFields}" Content="{Binding Draft}" />
+            <TextBlock Text="Observações" Style="{StaticResource FieldLabel}" />
+            <TextBox MaxLength="1000" Text="{Binding DraftNotes}" />
+            <TextBlock Style="{StaticResource ErrorText}" Text="{Binding DraftError}" />
+            <TextBlock Style="{StaticResource WarningText}" Text="{Binding LimitWarning}" />
+            <WrapPanel>
+              <Button Content="Simular" Style="{StaticResource SecondaryButton}" Command="{Binding SimulateCommand}" />
+              <Button Content="Copiar proposta (WhatsApp)" Style="{StaticResource SecondaryButton}" Command="{Binding CopyOfferCommand}" />
+              <Button Content="Contratar" Command="{Binding CreateLoanCommand}" />
+              <Button Content="Cancelar" Style="{StaticResource LinkButton}" Command="{Binding CancelDraftCommand}" />
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+        <TextBlock FontWeight="SemiBold" Margin="0,0,0,6" Text="{Binding PreviewTotals}" />
+        <DataGrid MaxHeight="300" Margin="0,0,0,12" ItemsSource="{Binding Preview}">
+          <DataGrid.Columns>
+            <DataGridTextColumn Header="Nº" Width="40" Binding="{Binding Number}" />
+            <DataGridTextColumn Header="Vencimento" Width="100" Binding="{Binding DueDate, Converter={StaticResource DateText}}" />
+            <DataGridTextColumn Header="Principal" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Principal, Converter={StaticResource Currency}}" />
+            <DataGridTextColumn Header="Juros" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Interest, Converter={StaticResource Currency}}" />
+            <DataGridTextColumn Header="Tarifa" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Fee, Converter={StaticResource Currency}}" />
+            <DataGridTextColumn Header="Parcela" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Total, Converter={StaticResource Currency}}" />
+            <DataGridTextColumn Header="Saldo após" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Balance, Converter={StaticResource Currency}}" />
+          </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock Text="Proposta para copiar" Style="{StaticResource FieldLabel}" />
+        <TextBox Style="{StaticResource BreakdownBox}" Height="220" Text="{Binding OfferText, Mode=OneWay}" />
+      </StackPanel>
+    </ScrollViewer>
+    <ScrollViewer Grid.Row="1" Grid.Column="2" VerticalScrollBarVisibility="Auto" Visibility="{Binding DetailMode, Converter={StaticResource BoolToVisible}}">
+      <StackPanel>
+        <DockPanel>
+          <Border DockPanel.Dock="Right" Style="{StaticResource Badge}" VerticalAlignment="Center">
+            <TextBlock FontWeight="SemiBold" Text="{Binding StatusText}" Foreground="{Binding Position.Status, Converter={StaticResource StatusColor}}" />
+          </Border>
+          <TextBlock Style="{StaticResource SectionTitle}" Margin="0" Text="{Binding Header}" />
+        </DockPanel>
+        <TextBlock Style="{StaticResource Hint}" Margin="0,4,0,10" Text="{Binding TermsText}" />
+        <WrapPanel>
+          <Border Style="{StaticResource StatCard}">
+            <StackPanel>
+              <TextBlock Text="Capital contratado" Style="{StaticResource FieldLabel}" />
+              <TextBlock FontSize="18" Text="{Binding Position.ContractedPrincipal, Converter={StaticResource Currency}}" />
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource StatCard}">
+            <StackPanel>
+              <TextBlock Text="Principal em aberto" Style="{StaticResource FieldLabel}" />
+              <TextBlock FontSize="18" Text="{Binding Position.OutstandingPrincipal, Converter={StaticResource Currency}}" />
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource StatCard}">
+            <StackPanel>
+              <TextBlock Text="Saldo total hoje (c/ encargos)" Style="{StaticResource FieldLabel}" />
+              <TextBlock FontSize="18" Text="{Binding Position.TotalOwed, Converter={StaticResource Currency}}" />
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource StatCard}">
+            <StackPanel>
+              <TextBlock Text="Vencido em aberto" Style="{StaticResource FieldLabel}" />
+              <TextBlock FontSize="18" Foreground="{StaticResource WarningBrush}" Text="{Binding Position.OverdueOutstanding, Converter={StaticResource Currency}}" />
+              <TextBlock Style="{StaticResource FieldLabel}">
+                <Run Text="maior atraso:" /> <Run Text="{Binding Position.LongestDelayDays, Mode=OneWay}" /> <Run Text="dia(s)" /></TextBlock>
+            </StackPanel>
+          </Border>
+          <Border Style="{StaticResource StatCard}">
+            <StackPanel>
+              <TextBlock Text="Recebido (total)" Style="{StaticResource FieldLabel}" />
+              <TextBlock FontSize="18" Foreground="{StaticResource SuccessBrush}" Text="{Binding Position.ReceivedTotal, Converter={StaticResource Currency}}" />
+            </StackPanel>
+          </Border>
+        </WrapPanel>
+        <Border Style="{StaticResource Card}">
+          <StackPanel>
+            <TextBlock Text="Registrar pagamento (total ou parcial)" Style="{StaticResource FieldLabel}" FontWeight="SemiBold" />
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="120" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition />
+              </Grid.ColumnDefinitions>
+              <StackPanel>
+                <TextBlock Text="Data" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding PmtDate}" />
+              </StackPanel>
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="Hora" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding PmtTime}" />
+              </StackPanel>
+              <StackPanel Grid.Column="4">
+                <TextBlock Text="Valor (R$)" Style="{StaticResource FieldLabel}" />
+                <TextBox Text="{Binding PmtAmount}" />
+              </StackPanel>
+              <StackPanel Grid.Column="6">
+                <TextBlock Text="Forma" Style="{StaticResource FieldLabel}" />
+                <ComboBox ItemsSource="{Binding PaymentMethods}" SelectedItem="{Binding PmtMethod}" />
+              </StackPanel>
+              <StackPanel Grid.Column="8">
+                <TextBlock Text="Observação" Style="{StaticResource FieldLabel}" />
+                <TextBox MaxLength="300" Text="{Binding PmtNote}" />
+              </StackPanel>
+            </Grid>
+            <WrapPanel>
+              <Button Content="Registrar pagamento" Command="{Binding PayCommand}" />
+              <Button Content="Usar valor da parcela selecionada" Style="{StaticResource SecondaryButton}" Command="{Binding PayInstallmentCommand}" />
+              <Button Content="Copiar cobrança (WhatsApp)" Style="{StaticResource SecondaryButton}" Command="{Binding CopyCollectionCommand}" />
+            </WrapPanel>
+          </StackPanel>
+        </Border>
+        <TabControl>
+          <TabItem Header="Parcelas">
+            <StackPanel>
+              <CheckBox Content="Mostrar também parcelas de versões anteriores" IsChecked="{Binding ShowHistory}" />
+              <DataGrid Height="300" ItemsSource="{Binding Installments}" SelectedItem="{Binding SelectedInstallment}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="V" Width="30" Binding="{Binding Version}" />
+                  <DataGridTextColumn Header="Nº" Width="36" Binding="{Binding Number}" />
+                  <DataGridTextColumn Header="Vencimento" Width="95" Binding="{Binding DueDate, Converter={StaticResource DateText}}" />
+                  <DataGridTextColumn Header="Principal" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Principal, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Juros" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Interest, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Parcela" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Total, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Pago" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Paid, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Encargos" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Charges, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Em aberto" Width="*" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Outstanding, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Atraso" Width="55" Binding="{Binding DaysLate}" />
+                  <DataGridTemplateColumn Header="Situação" Width="95">
+                    <DataGridTemplateColumn.CellTemplate>
+                      <DataTemplate>
+                        <TextBlock FontWeight="SemiBold" Text="{Binding StatusText}" Foreground="{Binding Status, Converter={StaticResource StatusColor}}" />
+                      </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                  </DataGridTemplateColumn>
+                </DataGrid.Columns>
+              </DataGrid>
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="Pagamentos">
+            <StackPanel>
+              <DataGrid Height="260" ItemsSource="{Binding Payments}" SelectedItem="{Binding SelectedPayment}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="Data e hora" Width="140" Binding="{Binding Timestamp, Converter={StaticResource DateText}}" />
+                  <DataGridTextColumn Header="Valor" Width="110" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Amount, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Forma" Width="100" Binding="{Binding PaymentMethod}" />
+                  <DataGridTextColumn Header="Situação" Width="150" Binding="{Binding Status}" />
+                  <DataGridTextColumn Header="Observação" Width="*" Binding="{Binding Note}" />
+                </DataGrid.Columns>
+              </DataGrid>
+              <Button Content="Estornar pagamento selecionado" Style="{StaticResource DangerButton}" HorizontalAlignment="Left" Margin="0,10,0,0" ToolTip="O pagamento não é apagado: fica marcado como estornado, com motivo, e os cálculos são refeitos" Command="{Binding ReverseCommand}" />
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="Versões e histórico">
+            <StackPanel>
+              <DataGrid Height="200" ItemsSource="{Binding Versions}">
+                <DataGrid.Columns>
+                  <DataGridTextColumn Header="V" Width="30" Binding="{Binding Number}" />
+                  <DataGridTextColumn Header="Início" Width="130" Binding="{Binding Start, Converter={StaticResource DateText}}" />
+                  <DataGridTextColumn Header="Tipo" Width="150" Binding="{Binding Kind}" />
+                  <DataGridTextColumn Header="Condições" Width="2*" Binding="{Binding Summary}" />
+                  <DataGridTextColumn Header="Desconto" Width="90" ElementStyle="{StaticResource RightCell}" HeaderStyle="{StaticResource RightHeader}" Binding="{Binding Deduction, Converter={StaticResource Currency}}" />
+                  <DataGridTextColumn Header="Motivo" Width="2*" Binding="{Binding Reason}" />
+                </DataGrid.Columns>
+              </DataGrid>
+              <Button Content="Desfazer última versão" Style="{StaticResource SecondaryButton}" HorizontalAlignment="Left" Margin="0,10,0,0" Command="{Binding UndoVersionCommand}" />
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="Renegociar / prorrogar">
+            <StackPanel>
+              <TextBlock FontWeight="SemiBold" Margin="0,0,0,10" Text="{Binding OutstandingText}" />
+              <TextBlock Text="Motivo" Style="{StaticResource FieldLabel}" />
+              <TextBox MaxLength="300" Text="{Binding Reason}" />
+              <Expander Header="Renegociação: novas condições sobre o que está em aberto" IsExpanded="True">
+                <Border Style="{StaticResource Card}" Margin="0,8,0,0">
+                  <StackPanel>
+                    <ContentControl ContentTemplate="{StaticResource LoanTermsFields}" Content="{Binding Reneg}" />
+                    <CheckBox Content="Incorporar juros vencidos ao novo principal (passam a render juros)" IsChecked="{Binding CapitalizeInterest}" />
+                    <CheckBox Content="Incorporar multa e mora ao novo principal" IsChecked="{Binding CapitalizeCharges}" />
+                    <TextBlock Text="O que não for incorporado é registrado como desconto concedido." Style="{StaticResource Hint}" Margin="0,0,0,8" />
+                    <Button Content="Renegociar" HorizontalAlignment="Left" Command="{Binding RenegotiateCommand}" />
+                  </StackPanel>
+                </Border>
+              </Expander>
+              <Expander Header="Prorrogação: empurrar as parcelas em aberto">
+                <Border Style="{StaticResource Card}" Margin="0,8,0,0">
+                  <StackPanel>
+                    <TextBlock Text="Quantos períodos" Style="{StaticResource FieldLabel}" />
+                    <TextBox Width="100" HorizontalAlignment="Left" Text="{Binding ExtensionPeriods}" />
+                    <CheckBox Content="Cobrar juros do período prorrogado" IsChecked="{Binding ChargeExtensionInterest}" />
+                    <CheckBox Content="Levar multa e mora para a 1ª parcela prorrogada" IsChecked="{Binding CapitalizeChargesOnExtension}" />
+                    <Button Content="Prorrogar" HorizontalAlignment="Left" Command="{Binding ExtendCommand}" />
+                  </StackPanel>
+                </Border>
+              </Expander>
+              <Expander Header="Amortização extraordinária (pagar parte do principal antes)">
+                <Border Style="{StaticResource Card}" Margin="0,8,0,0">
+                  <StackPanel>
+                    <TextBlock Text="Valor (R$)" Style="{StaticResource FieldLabel}" />
+                    <TextBox Width="160" HorizontalAlignment="Left" Text="{Binding AmortizationAmount}" />
+                    <CheckBox Content="Reduzir o prazo (em vez de reduzir o valor das parcelas)" IsChecked="{Binding ShortenTerm}" />
+                    <Button Content="Registrar amortização" HorizontalAlignment="Left" Command="{Binding AmortizeCommand}" />
+                  </StackPanel>
+                </Border>
+              </Expander>
+              <Expander Header="Situação do contrato: cancelar, baixar como perda, reabrir">
+                <WrapPanel Margin="0,8,0,0">
+                  <Button Content="Baixar como perda" Style="{StaticResource DangerButton}" Command="{Binding WriteOffCommand}" />
+                  <Button Content="Cancelar contrato" Style="{StaticResource DangerButton}" Command="{Binding CancelLoanCommand}" />
+                  <Button Content="Reabrir" Style="{StaticResource SecondaryButton}" Command="{Binding ReopenCommand}" />
+                </WrapPanel>
+              </Expander>
+            </StackPanel>
+          </TabItem>
+        </TabControl>
+        <TextBlock Text="Memória de cálculo (parcela ou pagamento selecionado)" Style="{StaticResource SectionTitle}" />
+        <TextBox Style="{StaticResource BreakdownBox}" Height="190" Text="{Binding SelectedBreakdown, Mode=OneWay}" />
+      </StackPanel>
+    </ScrollViewer>
+    <TextBlock Grid.Row="1" Grid.Column="2" Text="Selecione um empréstimo na lista ou clique em &quot;+ Novo empréstimo&quot;." Style="{StaticResource Hint}" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <UIElement.Visibility>
+        <MultiBinding Converter="{StaticResource NoneVisible}">
+          <Binding Path="DraftMode" />
+          <Binding Path="DetailMode" />
+        </MultiBinding>
+      </UIElement.Visibility>
+    </TextBlock>
+  </Grid>
+</UserControl>
